@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Noto+Serif+JP:wght@600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=4">
 </head>
 <body data-page="home">
   <header class="site-header" id="site-header"></header>
@@ -23,6 +23,21 @@
       <div class="hero-actions">
         <a class="btn btn-white" href="dx/index.html">DX推進特設ページ</a>
         <a class="btn btn-ghost" id="hero-iine" href="#" target="_blank" rel="noopener">いいね！パルプロジェクト</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="admin-toolbar">
+        <div>
+          <h2 class="section-title">組織開発課からのお知らせ</h2>
+          <p class="section-lead">研修、プロジェクト、DXの進捗など、課からの発信です。</p>
+        </div>
+        <a class="btn btn-outline btn-sm" href="news/index.html">一覧を見る</a>
+      </div>
+      <div id="home-news" class="news-list" style="margin-top:24px">
+        <div class="status-msg">お知らせを読み込んでいます…</div>
       </div>
     </div>
   </section>
@@ -104,7 +119,7 @@
   <section class="section band">
     <div class="container">
       <h2 class="section-title" style="display:block;text-align:center">進行中の注目プロジェクト</h2>
-      <div class="grid-3" style="margin-top:36px">
+      <div class="grid-2" style="margin-top:36px">
         <article class="card">
           <div class="icon-box icon-amber">
             <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
@@ -121,36 +136,14 @@
           <p>AppSheet等を活用し、自分たちの業務課題を解決するアプリを自作。プログラミング不要で業務を効率化します。</p>
           <a class="link-more sky" href="dx/index.html">特設ページを見る →</a>
         </article>
-        <article class="card">
-          <div class="icon-box icon-indigo">
-            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-          </div>
-          <h3>ロジカル思考研修</h3>
-          <p>プログラミング思考を応用し、業務の「ブラックボックス化」を防ぎ、エラーのない標準化と指示出しを体得します。</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="admin-toolbar">
-        <div>
-          <h2 class="section-title">組織開発課からのお知らせ</h2>
-          <p class="section-lead">研修、プロジェクト、DXの進捗など、課からの発信です。</p>
-        </div>
-        <a class="btn btn-outline btn-sm" href="news/index.html">一覧を見る</a>
-      </div>
-      <div id="home-news" class="news-list" style="margin-top:24px">
-        <div class="status-msg">お知らせを読み込んでいます…</div>
       </div>
     </div>
   </section>
 
   <footer class="site-footer" id="site-footer"></footer>
-  <script src="assets/js/config.js?v=3"></script>
-  <script src="assets/js/common.js?v=3"></script>
-  <script src="assets/js/api.js?v=3"></script>
+  <script src="assets/js/config.js?v=4"></script>
+  <script src="assets/js/common.js?v=4"></script>
+  <script src="assets/js/api.js?v=4"></script>
   <script>
     (function () {
       const url = (window.PORTAL_CONFIG && window.PORTAL_CONFIG.iinePalUrl) || "#";

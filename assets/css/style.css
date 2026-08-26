@@ -134,7 +134,7 @@ a { color: var(--blue-dark); }
   box-shadow: var(--shadow);
   border-radius: 24px;
   padding: 40px 32px;
-  margin-top: -56px; position: relative; z-index: 2;
+  margin-top: 24px; position: relative; z-index: 2;
 }
 .pill-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
 .pill {
