@@ -135,7 +135,7 @@ function setup() {
 
   Logger.log("スプレッドシート: " + ss.getUrl());
   Logger.log("添付フォルダ: " + folder.getUrl());
-  Logger.log("次に setInitialAdmin('admin', '任意の強いパスワード') を実行してください。");
+  Logger.log("次に bootstrapAdmin の PASSWORD を書き換えて実行してください。");
 }
 
 function unlockLogins() {
@@ -147,7 +147,9 @@ function unlockLogins() {
 }
 
 function setInitialAdmin(username, password) {
-  if (!username || !password) throw new Error("ユーザー名とパスワードを指定してください");
+  if (!username || !password) {
+    throw new Error("この関数はエディタから直接実行できません。上の関数一覧で bootstrapAdmin を選び、PASSWORD を書き換えてから実行してください。");
+  }
   setup();
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);

@@ -25,8 +25,8 @@
     if (!gasConfigured()) {
       return handleDemo(payload);
     }
-    if (payload.action === "uploadAttachment" && payload.data && String(payload.data).length > 5000) {
-      return uploadInChunks(payload);
+    if (payload.action === "uploadAttachment") {
+      return uploadFile(payload);
     }
     return requestGet(payload);
   }
@@ -44,7 +44,7 @@
     try {
       res = await fetch(url, { method: "GET", redirect: "follow", cache: "no-store" });
     } catch (err) {
-      throw new Error("サーバーに接続できませんでした。通信環境を確認して再試行してください。");
+      throw new Error("サーバーに接続できませんでした。ファイルが大きい場合は、より小さいファイルで試すか、GASを最新コードで新しくデプロイしてください。");
     }
     const text = await res.text();
     try {
@@ -54,26 +54,43 @@
     }
   }
 
-  async function uploadInChunks(payload) {
-    const chunkSize = 4500;
+  async function uploadFile(payload) {
     const data = String(payload.data || "");
-    const total = Math.ceil(data.length / chunkSize) || 1;
+    const directPayload = {
+      action: "uploadAttachment",
+      token: payload.token,
+      postId: payload.postId,
+      name: payload.name,
+      mimeType: payload.mimeType,
+      data: data
+    };
+
+    if (data.length <= 12000) {
+      return requestGet(directPayload);
+    }
+
     const started = await requestGet({
       action: "uploadInit",
       token: payload.token,
       postId: payload.postId,
       name: payload.name,
       mimeType: payload.mimeType,
-      total: total
+      total: Math.ceil(data.length / 4500) || 1
     });
+
+    if (!started.ok && /未知のアクション/.test(String(started.error || ""))) {
+      return requestGet(directPayload);
+    }
     if (!started.ok) throw new Error(started.error || "アップロードを開始できませんでした");
+
+    const total = Math.ceil(data.length / 4500) || 1;
     for (let i = 0; i < total; i++) {
       const part = await requestGet({
         action: "uploadChunk",
         token: payload.token,
         uploadId: started.uploadId,
         index: i,
-        data: data.slice(i * chunkSize, (i + 1) * chunkSize)
+        data: data.slice(i * 4500, (i + 1) * 4500)
       });
       if (!part.ok) throw new Error(part.error || "アップロードに失敗しました");
     }
