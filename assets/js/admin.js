@@ -58,7 +58,7 @@
     return `
       <div class="login-wrap">
         <h1>管理者ログイン</h1>
-        <p class="section-lead">組織開発課のお知らせを投稿・編集します。</p>
+          <p class="section-lead">組織開発課のお知らせを投稿・編集します。ユーザー名は <code>admin</code>（bootstrapAdmin で設定した値）です。</p>
         <form class="form-card" id="login-form">
           ${warn}
           <label for="username">ユーザー名</label>

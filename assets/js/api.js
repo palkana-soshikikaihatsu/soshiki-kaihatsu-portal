@@ -25,18 +25,65 @@
     if (!gasConfigured()) {
       return handleDemo(payload);
     }
-    const res = await fetch(cfg.gasUrl, {
-      method: "POST",
-      redirect: "follow",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
+    if (payload.action === "uploadAttachment" && payload.data && String(payload.data).length > 5000) {
+      return uploadInChunks(payload);
+    }
+    return requestGet(payload);
+  }
+
+  async function requestGet(payload) {
+    const params = new URLSearchParams();
+    Object.keys(payload).forEach((key) => {
+      const val = payload[key];
+      if (val == null || val === "") return;
+      params.set(key, typeof val === "object" ? JSON.stringify(val) : String(val));
     });
+    const joiner = cfg.gasUrl.indexOf("?") >= 0 ? "&" : "?";
+    const url = cfg.gasUrl + joiner + params.toString();
+    let res;
+    try {
+      res = await fetch(url, { method: "GET", redirect: "follow", cache: "no-store" });
+    } catch (err) {
+      throw new Error("サーバーに接続できませんでした。通信環境を確認して再試行してください。");
+    }
     const text = await res.text();
     try {
       return JSON.parse(text);
     } catch (err) {
-      throw new Error("サーバー応答を解析できませんでした。GASのデプロイ設定を確認してください。");
+      throw new Error("サーバー応答を解析できませんでした。GASの最新コードを保存し、「デプロイ → 新しいデプロイ」を実行してください。");
     }
+  }
+
+  async function uploadInChunks(payload) {
+    const chunkSize = 4500;
+    const data = String(payload.data || "");
+    const total = Math.ceil(data.length / chunkSize) || 1;
+    const started = await requestGet({
+      action: "uploadInit",
+      token: payload.token,
+      postId: payload.postId,
+      name: payload.name,
+      mimeType: payload.mimeType,
+      total: total
+    });
+    if (!started.ok) throw new Error(started.error || "アップロードを開始できませんでした");
+    for (let i = 0; i < total; i++) {
+      const part = await requestGet({
+        action: "uploadChunk",
+        token: payload.token,
+        uploadId: started.uploadId,
+        index: i,
+        data: data.slice(i * chunkSize, (i + 1) * chunkSize)
+      });
+      if (!part.ok) throw new Error(part.error || "アップロードに失敗しました");
+    }
+    const done = await requestGet({
+      action: "uploadCommit",
+      token: payload.token,
+      uploadId: started.uploadId
+    });
+    if (!done.ok) throw new Error(done.error || "アップロードの確定に失敗しました");
+    return done;
   }
 
   function handleDemo(payload) {
@@ -107,7 +154,11 @@
       const data = await request({
         action: post.id ? "updatePost" : "createPost",
         token: session && session.token,
-        post
+        id: post.id,
+        title: post.title,
+        body: post.body,
+        category: post.category,
+        published: post.published
       });
       if (!data.ok) throw new Error(data.error || "保存に失敗しました");
       return data.post;

@@ -9,11 +9,11 @@
  */
 const SESSION_HOURS = 12;
 const MAX_FILE_BYTES = 8 * 1024 * 1024;
-const LOGIN_WINDOW_MS = 10 * 60 * 1000;
-const LOGIN_MAX_FAIL = 8;
+const LOGIN_WINDOW_MS = 5 * 60 * 1000;
+const LOGIN_MAX_FAIL = 30;
 
 function doGet(e) {
-  return handle_(e && e.parameter ? e.parameter : {});
+  return handle_(normalize_(e && e.parameter ? e.parameter : {}));
 }
 
 function doPost(e) {
@@ -27,7 +27,21 @@ function doPost(e) {
   } else if (e && e.parameter) {
     data = e.parameter;
   }
-  return handle_(data);
+  return handle_(normalize_(data));
+}
+
+function normalize_(req) {
+  req = req || {};
+  if (req.payload) {
+    try {
+      var parsed = JSON.parse(req.payload);
+      Object.keys(parsed).forEach(function (k) { req[k] = parsed[k]; });
+    } catch (err) {}
+  }
+  if (typeof req.post === "string" && req.post.charAt(0) === "{") {
+    try { req.post = JSON.parse(req.post); } catch (err) {}
+  }
+  return req;
 }
 
 function handle_(req) {
@@ -66,6 +80,15 @@ function handle_(req) {
         break;
       case "uploadAttachment":
         result = { ok: true, attachment: uploadAttachment_(req) };
+        break;
+      case "uploadInit":
+        result = uploadInit_(req);
+        break;
+      case "uploadChunk":
+        result = uploadChunk_(req);
+        break;
+      case "uploadCommit":
+        result = uploadCommit_(req);
         break;
       case "deleteAttachment":
         requireAdmin_(req.token);
@@ -113,6 +136,14 @@ function setup() {
   Logger.log("スプレッドシート: " + ss.getUrl());
   Logger.log("添付フォルダ: " + folder.getUrl());
   Logger.log("次に setInitialAdmin('admin', '任意の強いパスワード') を実行してください。");
+}
+
+function unlockLogins() {
+  setup();
+  var sheet = sh_("LoginLog");
+  var last = sheet.getLastRow();
+  if (last > 1) sheet.deleteRows(2, last - 1);
+  Logger.log("ログイン失敗履歴をクリアしました。");
 }
 
 function setInitialAdmin(username, password) {
@@ -222,7 +253,7 @@ function upsertPost_(token, post, creating) {
       var id = uid_();
       sheet.appendRow([
         id, title, String(post.body || ""), String(post.category || "お知らせ"),
-        !!post.published, session.username, now, now
+        !!toBool_(post.published), session.username, now, now
       ]);
       return getPost_(id, token);
     }
@@ -230,7 +261,7 @@ function upsertPost_(token, post, creating) {
     if (row.index < 0) throw new Error("記事が見つかりません");
     sheet.getRange(row.index + 1, 2, 1, 7).setValues([[
       title, String(post.body || ""), String(post.category || "お知らせ"),
-      !!post.published, row.obj.author || session.username, row.obj.createdAt, now
+      !!toBool_(post.published), row.obj.author || session.username, row.obj.createdAt, now
     ]]);
     return getPost_(post.id, token);
   } finally {
@@ -247,6 +278,47 @@ function deletePost_(id) {
   atts.forEach(function (a) { deleteAttachment_(a.id); });
   posts.deleteRow(row.index + 1);
   return { ok: true };
+}
+
+function uploadInit_(req) {
+  requireAdmin_(req.token);
+  if (!req.postId) throw new Error("投稿IDがありません");
+  var uploadId = uid_();
+  CacheService.getScriptCache().put("up_" + uploadId, JSON.stringify({
+    postId: req.postId,
+    name: req.name,
+    mimeType: req.mimeType,
+    total: Number(req.total || 0)
+  }), 1800);
+  return { ok: true, uploadId: uploadId };
+}
+
+function uploadChunk_(req) {
+  requireAdmin_(req.token);
+  if (!req.uploadId) throw new Error("アップロードIDがありません");
+  CacheService.getScriptCache().put("upc_" + req.uploadId + "_" + req.index, String(req.data || ""), 1800);
+  return { ok: true };
+}
+
+function uploadCommit_(req) {
+  requireAdmin_(req.token);
+  var cache = CacheService.getScriptCache();
+  var raw = cache.get("up_" + req.uploadId);
+  if (!raw) throw new Error("アップロードが期限切れです。もう一度お試しください");
+  var meta = JSON.parse(raw);
+  var parts = [];
+  for (var i = 0; i < meta.total; i++) {
+    var part = cache.get("upc_" + req.uploadId + "_" + i);
+    if (part == null) throw new Error("ファイルの一部が欠けています");
+    parts.push(part);
+  }
+  return { ok: true, attachment: uploadAttachment_({
+    token: req.token,
+    postId: meta.postId,
+    name: meta.name,
+    mimeType: meta.mimeType,
+    data: parts.join("")
+  }) };
 }
 
 function uploadAttachment_(req) {
