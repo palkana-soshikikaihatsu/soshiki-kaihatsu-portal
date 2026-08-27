@@ -24,6 +24,7 @@
         <nav class="site-nav" id="site-nav">
           ${link("index.html", "ホーム", "home")}
           ${link("dx/index.html", "DX推進", "dx")}
+          ${link("danjo/index.html", "男女共同参画", "danjo")}
           <a class="nav-ext" href="${iine}" target="_blank" rel="noopener">いいねパル</a>
           ${link("news/index.html", "お知らせ", "news")}
           ${link("admin/index.html", "管理者", "admin")}
