@@ -97,6 +97,9 @@ function handle_(req) {
       case "changePassword":
         result = changePassword_(req.token, req.currentPassword, req.newPassword);
         break;
+      case "enterPortal":
+        result = enterPortal_(req.staffId);
+        break;
       default:
         result = { ok: false, error: "未知のアクションです: " + action };
     }
@@ -124,6 +127,8 @@ function setup() {
   ensureSheet_(ss, "Posts", ["id", "title", "body", "category", "published", "author", "createdAt", "updatedAt"]);
   ensureSheet_(ss, "Attachments", ["id", "postId", "name", "mimeType", "size", "driveFileId", "createdAt"]);
   ensureSheet_(ss, "LoginLog", ["at", "username", "success", "note"]);
+  ensureSheet_(ss, "whitelist", ["職員番号", "氏名"]);
+  ensureSheet_(ss, "AccessLog", ["at", "staffId", "name", "action", "note"]);
 
   var folder;
   if (props.getProperty("DRIVE_FOLDER_ID")) {
@@ -167,6 +172,91 @@ function setInitialAdmin(username, password) {
     lock.releaseLock();
   }
   Logger.log("管理者を設定しました: " + username);
+}
+
+function normalizeStaffId_(value) {
+  var s = String(value == null ? "" : value).trim().replace(/[ 　]/g, "");
+  if (!s) return "";
+  if (/^\d+(\.0+)?$/.test(s)) return String(parseInt(s, 10));
+  return s;
+}
+
+function staffKeyMap_(value) {
+  var raw = String(value == null ? "" : value).trim().replace(/[ 　]/g, "");
+  var map = {};
+  if (!raw) return map;
+  map[raw] = true;
+  var normalized = normalizeStaffId_(raw);
+  if (normalized) map[normalized] = true;
+  return map;
+}
+
+function isHeaderRow_(id, name) {
+  var a = String(id || "").replace(/\s/g, "");
+  var b = String(name || "").replace(/\s/g, "");
+  return a === "職員番号" || a.toLowerCase() === "id" || a.toLowerCase() === "staffid" ||
+    b === "氏名" || b === "名前" || b.toLowerCase() === "name";
+}
+
+function findStaff_(staffId) {
+  var want = staffKeyMap_(staffId);
+  if (!Object.keys(want).length) return null;
+  var sheet = ss_().getSheetByName("whitelist");
+  if (!sheet) throw new Error("whitelist シートが見つかりません。A列に職員番号、B列に氏名を入れてください。");
+  var values = sheet.getDataRange().getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (isHeaderRow_(values[i][0], values[i][1])) continue;
+    var have = staffKeyMap_(values[i][0]);
+    var hit = false;
+    Object.keys(want).forEach(function (k) {
+      if (have[k]) hit = true;
+    });
+    if (hit) {
+      return {
+        staffId: normalizeStaffId_(values[i][0]) || String(values[i][0]).trim(),
+        name: String(values[i][1] || "").trim()
+      };
+    }
+  }
+  return null;
+}
+
+function tooManyStaffFails_(staffId) {
+  var rows = objects_(sh_("AccessLog"));
+  var since = Date.now() - LOGIN_WINDOW_MS;
+  var fails = rows.filter(function (r) {
+    return String(r.action) === "deny" &&
+      normalizeStaffId_(r.staffId) === normalizeStaffId_(staffId) &&
+      new Date(r.at).getTime() >= since;
+  });
+  return fails.length >= LOGIN_MAX_FAIL;
+}
+
+function logAccess_(staffId, name, action, note) {
+  sh_("AccessLog").appendRow([nowIso_(), staffId || "", name || "", action || "enter", note || ""]);
+}
+
+function enterPortal_(staffId) {
+  staffId = String(staffId || "").trim();
+  if (!staffId) throw new Error("職員番号を入力してください");
+  ensureSheet_(ss_(), "AccessLog", ["at", "staffId", "name", "action", "note"]);
+  if (tooManyStaffFails_(staffId)) {
+    throw new Error("失敗が続いたため、しばらく時間をおいてから再試行してください");
+  }
+  var staff = findStaff_(staffId);
+  if (!staff) {
+    logAccess_(normalizeStaffId_(staffId) || staffId, "", "deny", "not found");
+    throw new Error("この職員番号では入れません。番号をご確認ください。");
+  }
+  logAccess_(staff.staffId, staff.name, "enter", "");
+  var expires = new Date(Date.now() + SESSION_HOURS * 3600 * 1000);
+  return {
+    ok: true,
+    staffId: staff.staffId,
+    name: staff.name,
+    greeting: staff.name ? staff.name + "さん、ようこそ" : "ようこそ",
+    expiresAt: expires.toISOString()
+  };
 }
 
 function login_(username, password) {

@@ -112,6 +112,13 @@
       const post = DEMO_POSTS.find((p) => p.id === payload.id) || DEMO_POSTS[0];
       return Promise.resolve({ ok: true, demo: true, post });
     }
+    if (action === "enterPortal") {
+      return Promise.resolve({
+        ok: false,
+        demo: true,
+        error: "バックエンド未設定のため、入場できません。GASを最新の Code.gs でデプロイしてください。"
+      });
+    }
     return Promise.resolve({
       ok: false,
       demo: true,
@@ -132,11 +139,48 @@
     else localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   }
 
+  const VISITOR_KEY = cfg.visitorKey || "od_portal_visitor";
+
+  function getVisitor() {
+    try {
+      const v = JSON.parse(localStorage.getItem(VISITOR_KEY) || "null");
+      if (!v || !v.staffId) return null;
+      if (v.expiresAt && new Date(v.expiresAt).getTime() < Date.now()) {
+        localStorage.removeItem(VISITOR_KEY);
+        return null;
+      }
+      return v;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setVisitor(visitor) {
+    if (!visitor) localStorage.removeItem(VISITOR_KEY);
+    else localStorage.setItem(VISITOR_KEY, JSON.stringify(visitor));
+  }
+
   window.PortalAPI = {
     gasConfigured,
     request,
     getSession,
     setSession,
+    getVisitor,
+    setVisitor,
+    async enterPortal(staffId) {
+      const data = await request({ action: "enterPortal", staffId: String(staffId || "").trim() });
+      if (!data.ok) throw new Error(data.error || "入場できませんでした");
+      setVisitor({
+        staffId: data.staffId,
+        name: data.name || "",
+        greeting: data.greeting,
+        expiresAt: data.expiresAt
+      });
+      return data;
+    },
+    leavePortal() {
+      setVisitor(null);
+    },
     async listPosts() {
       const data = await request({ action: "listPosts" });
       if (!data.ok) throw new Error(data.error || "お知らせを取得できませんでした");

@@ -41,7 +41,7 @@ a { color: var(--blue-dark); }
 }
 .header-inner {
   display: flex; align-items: center; justify-content: space-between;
-  min-height: var(--header-h); gap: 16px;
+  min-height: var(--header-h); gap: 16px; flex-wrap: wrap;
 }
 .logo {
   display: flex; align-items: center; gap: 12px;
@@ -283,6 +283,21 @@ textarea { min-height: 220px; resize: vertical; }
 .table th, .table td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; font-size: 14px; }
 .table th { background: #f8fafc; font-size: 12px; color: var(--muted); }
 .admin-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+
+.visitor-box {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  font-size: 13px; font-weight: 700; color: var(--navy);
+}
+.visitor-box[hidden] { display: none; }
+body.is-gated { overflow: hidden; }
+.access-gate {
+  position: fixed; inset: 0; z-index: 200;
+  display: grid; place-items: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 42%, #10b981 100%);
+}
+.access-card { width: min(420px, 100%); margin: 0; }
+.access-card h1 { margin: 0 0 8px; font-size: 22px; }
 
 .site-footer {
   background: #0f172a; color: #94a3b8; padding: 40px 0;

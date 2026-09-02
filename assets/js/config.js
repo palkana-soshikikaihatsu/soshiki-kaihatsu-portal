@@ -3,6 +3,7 @@ window.PORTAL_CONFIG = {
   gasUrl: "https://script.google.com/macros/s/AKfycbx9hJwn2q4QS9oH_LLPqOVLQlqtVxODdhmNgTstHYLe5xzK_06SJ_oCtGdQV9xkvIZeUg/exec",
   iinePalUrl: "https://palkana-soshikikaihatsu.github.io/soshikikaihatsu.github.io/",
   sessionKey: "od_portal_session",
+  visitorKey: "od_portal_visitor",
   maxFileBytes: 8 * 1024 * 1024,
   allowedExtensions: [
     "jpg", "jpeg", "png", "gif", "webp",

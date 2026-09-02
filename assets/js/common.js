@@ -29,6 +29,10 @@
           ${link("news/index.html", "お知らせ", "news")}
           ${link("admin/index.html", "管理者", "admin")}
         </nav>
+        <div class="visitor-box" id="visitor-box" hidden>
+          <span id="visitor-greet"></span>
+          <button type="button" class="btn btn-outline btn-sm" id="visitor-exit">退出</button>
+        </div>
       </div>`;
     const toggle = header.querySelector(".nav-toggle");
     const nav = header.querySelector("#site-nav");
