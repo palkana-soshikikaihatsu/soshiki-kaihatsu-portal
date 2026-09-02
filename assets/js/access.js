@@ -37,7 +37,11 @@
       gate.remove();
       showGreeting(data);
     } catch (ex) {
-      err.textContent = ex.message;
+      var msg = ex.message || "";
+      if (/未知のアクション/.test(msg)) {
+        msg = "公開中のGASが古いです。Apps Scriptで「デプロイ → デプロイを管理 → 鉛筆 → バージョンを新バージョン」を実行してください。";
+      }
+      err.textContent = msg;
     }
   });
 

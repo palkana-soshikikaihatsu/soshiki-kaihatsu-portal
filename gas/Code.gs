@@ -50,7 +50,7 @@ function handle_(req) {
     var result;
     switch (action) {
       case "ping":
-        result = { ok: true, service: "od-portal" };
+        result = { ok: true, service: "od-portal", version: 3 };
         break;
       case "login":
         result = login_(req.username, req.password);
