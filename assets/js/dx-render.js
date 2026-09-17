@@ -48,7 +48,8 @@
 
   function memberLabel(member) {
     const name = `${member.name || ""}さん`;
-    return member.role ? `${name}（${member.role}）` : name;
+    const extra = [member.role, member.affiliation].filter(Boolean).join(" / ");
+    return extra ? `${name}（${extra}）` : name;
   }
 
   function renderSubnav(activeId) {
@@ -175,7 +176,7 @@
         <div class="container">
           <p class="dx-kicker">Season Recap</p>
           <h2 class="section-title dx-on-dark">成果発表会の様子</h2>
-          <p class="section-lead dx-on-dark">各チームの発表を1本にまとめた動画です。メンバー紹介は準備ができ次第追加します。</p>
+          <p class="section-lead dx-on-dark">各チームの発表を1本にまとめた動画です。下の各隊カードから資料もご覧いただけます。</p>
           <div class="dx-overview">${items.map(renderEmbed).join("")}</div>
         </div>
       </section>`;
@@ -186,7 +187,10 @@
     const hub = DATA.hub || {};
     const seasons = seasonList();
     const first = DATA.seasons["2025h2"];
-    const firstCount = ((first && first.teams) || []).reduce((n, t) => n + (t.members || []).length, 0);
+    const second = DATA.seasons["2026h1"];
+    const countMembers = (season) => ((season && season.teams) || []).reduce((n, t) => n + (t.members || []).length, 0);
+    const firstCount = countMembers(first);
+    const secondCount = countMembers(second);
     const cards = seasons.map((s) => `
       <a class="dx-season-card accent-${esc(s.accent || "cyan")}" href="${dxBase}/${s.href}">
         <span class="dx-season-status">${esc(s.statusLabel)}</span>
@@ -206,7 +210,7 @@
         <div><b>${esc(hub.seasonCount)}</b><span>シーズン</span></div>
         <div><b>${esc(hub.totalMembers)}</b><span>参加メンバー</span></div>
         <div><b>${esc(firstCount || "—")}</b><span>2025下期メンバー</span></div>
-        <div><b>NOW</b><span>2026上期 進行中</span></div>
+        <div><b>${esc(secondCount || "—")}</b><span>2026上期メンバー</span></div>
       </div>
       <div class="dx-season-grid">${cards}</div>`;
   }

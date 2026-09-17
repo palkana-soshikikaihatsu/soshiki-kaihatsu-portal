@@ -149,13 +149,13 @@ window.DX_TASK_DATA = {
       href: "2026h1/index.html",
       label: "2026年度 上期",
       seasonNo: 2,
-      status: "ongoing",
-      statusLabel: "Season 02 / 動画公開中",
+      status: "published",
+      statusLabel: "Season 02 / 公開中",
       period: "2026年4月 — 2026年9月",
       eventDate: "",
       eventTitle: "第2回 DX推進タスク 成果発表会",
       accent: "violet",
-      lead: "2シーズン目。現場起点の開発をさらに広げています。各チームの発表を1本にまとめた動画を公開しています。メンバー紹介は準備ができ次第追加します。",
+      lead: "2シーズン目。Venus隊の受付センター向けCRMと、Jupiter隊の持ち出し備品管理アプリ。各チームの発表を1本にまとめた動画と、資料を公開しています。",
       overview: {
         title: "",
         slidesUrl: ""
@@ -164,7 +164,47 @@ window.DX_TASK_DATA = {
         { type: "video", title: "成果発表会（ダイジェスト）", url: "https://drive.google.com/file/d/1idZi3VZTyUNKsGtHjFnnPVzU9iCTPske/view?usp=drive_link" }
       ],
       story: null,
-      teams: []
+      teams: [
+        {
+          id: "venus",
+          code: "VENUS",
+          name: "Venus隊",
+          app: "Passtel（パステル）",
+          theme: "受付センター特化CRMアプリ",
+          summary: "受付センターの業務に特化したCRMで、組合員対応の記録と引き継ぎをスムーズにします。",
+          members: [
+            { name: "神田賢一", affiliation: "横浜南センター" },
+            { name: "中尾景子", affiliation: "大和センター" },
+            { name: "山中一誠", affiliation: "麻生センター" },
+            { name: "赤峰ひかり", affiliation: "横浜北センター" },
+            { name: "加藤結香", affiliation: "組織運営課" },
+            { name: "木下沙季", affiliation: "営業推進課" },
+            { name: "遠藤爽華", affiliation: "横浜菅田センター" }
+          ],
+          media: [
+            { type: "slides", title: "プレゼン資料", url: "https://drive.google.com/file/d/1UVQOnjfG1FT60R953nWS9_exxrl2g5WI/view?usp=drive_link" }
+          ]
+        },
+        {
+          id: "jupiter",
+          code: "JUPITER",
+          name: "Jupiter隊",
+          app: "Mochi-Go（モチゴー）",
+          theme: "現場使用持ち出し備品特化型備品管理アプリ",
+          summary: "現場で使う持ち出し備品に特化し、所在と貸出状況を見える化します。",
+          members: [
+            { name: "依田靖", affiliation: "横浜中センター" },
+            { name: "鈴木一哉", affiliation: "平塚センター" },
+            { name: "牛塚聖", affiliation: "宮前センター" },
+            { name: "堀添貴広", affiliation: "鶴見センター" },
+            { name: "小林敏", affiliation: "人事課" },
+            { name: "井桁圭子", affiliation: "広報課" }
+          ],
+          media: [
+            { type: "slides", title: "プレゼン資料", url: "https://drive.google.com/file/d/1UVQOnjfG1FT60R953nWS9_exxrl2g5WI/view?usp=drive_link" }
+          ]
+        }
+      ]
     }
   }
 };
@@ -184,8 +224,8 @@ window.DX_TEAM_TEMPLATE = {
   theme: "テーマ（課題）",
   summary: "チームの取り組みを1〜2文で。",
   members: [
-    { name: "氏名", role: "リーダー" },
-    { name: "氏名" }
+    { name: "氏名", role: "リーダー", affiliation: "所属" },
+    { name: "氏名", affiliation: "所属" }
   ],
   media: [
     { type: "slides", title: "プレゼン資料", url: "" },
