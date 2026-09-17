@@ -483,6 +483,7 @@ body:has(.dx-teams-band) .site-footer { margin-top: 0; }
 }
 .dx-media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .dx-overview { margin-top: 20px; }
+.dx-media-stack { display: grid; gap: 20px; margin-top: 20px; }
 .dx-embed {
   overflow: hidden; border-radius: 16px;
   border: 1px solid rgba(148,163,184,.2);

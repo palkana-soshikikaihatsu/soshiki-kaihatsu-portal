@@ -176,8 +176,8 @@
         <div class="container">
           <p class="dx-kicker">Season Recap</p>
           <h2 class="section-title dx-on-dark">成果発表会の様子</h2>
-          <p class="section-lead dx-on-dark">各チームの発表を1本にまとめた動画です。下の各隊カードから資料もご覧いただけます。</p>
-          <div class="dx-overview">${items.map(renderEmbed).join("")}</div>
+          <p class="section-lead dx-on-dark">発表会の動画の下に、2026キックオフ時の網野専務の冒頭あいさつを掲載しています。各隊の資料はさらに下のカードからご覧ください。</p>
+          <div class="dx-media-stack">${items.map(renderEmbed).join("")}</div>
         </div>
       </section>`;
   }

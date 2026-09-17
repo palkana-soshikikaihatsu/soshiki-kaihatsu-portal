@@ -155,13 +155,14 @@ window.DX_TASK_DATA = {
       eventDate: "",
       eventTitle: "第2回 DX推進タスク 成果発表会",
       accent: "violet",
-      lead: "2シーズン目。Venus隊の受付センター向けCRMと、Jupiter隊の持ち出し備品管理アプリ。各チームの発表を1本にまとめた動画と、資料を公開しています。",
+      lead: "2シーズン目。Venus隊の受付センター向けCRMと、Jupiter隊の持ち出し備品管理アプリ。成果発表会の動画と、キックオフ時の網野専務あいさつ、各隊の資料を公開しています。",
       overview: {
         title: "",
         slidesUrl: ""
       },
       media: [
-        { type: "video", title: "成果発表会（ダイジェスト）", url: "https://drive.google.com/file/d/1idZi3VZTyUNKsGtHjFnnPVzU9iCTPske/view?usp=drive_link" }
+        { type: "video", title: "2026年 成果発表会", url: "https://drive.google.com/file/d/1QMm8MqRbpqcNjwy4rinz7sHMcLaUNT_v/view?usp=drive_link" },
+        { type: "video", title: "2026キックオフ　網野専務 冒頭あいさつ", url: "https://drive.google.com/file/d/1rPQR2fLTrHc_QoxJ3WA2ywMZr1R7oe-J/view?usp=drive_link" }
       ],
       story: null,
       teams: [
