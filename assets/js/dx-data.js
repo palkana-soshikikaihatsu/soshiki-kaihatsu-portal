@@ -182,7 +182,7 @@ window.DX_TASK_DATA = {
             { name: "遠藤爽華", affiliation: "横浜菅田センター" }
           ],
           media: [
-            { type: "slides", title: "プレゼン資料", url: "https://drive.google.com/file/d/1HqSPZ2ZDdHO6nePnv4-tfxl_9MtC9q_W/view?usp=drive_link" }
+            { type: "slides", title: "プレゼン資料", url: "https://drive.google.com/file/d/1CE5BGF81y3tF1eEyFTnKQxHCR3cQv0QI/view?usp=drive_link" }
           ]
         },
         {
@@ -201,7 +201,7 @@ window.DX_TASK_DATA = {
             { name: "井桁圭子", affiliation: "広報課" }
           ],
           media: [
-            { type: "slides", title: "プレゼン資料", url: "https://drive.google.com/file/d/1UVQOnjfG1FT60R953nWS9_exxrl2g5WI/view?usp=drive_link" }
+            { type: "slides", title: "プレゼン資料", url: "https://drive.google.com/file/d/1DFdsQPcw82hgJNofUnaGIdIGq0-mNYWi/view?usp=drive_link" }
           ]
         }
       ]
