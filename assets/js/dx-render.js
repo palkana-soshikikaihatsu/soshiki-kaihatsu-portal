@@ -167,6 +167,20 @@
       </section>`;
   }
 
+  function renderSeasonMedia(media) {
+    const items = (media || []).filter((item) => item && item.url);
+    if (!items.length) return "";
+    return `
+      <section class="section dx-teams-band" id="showcase">
+        <div class="container">
+          <p class="dx-kicker">Season Recap</p>
+          <h2 class="section-title dx-on-dark">成果発表会の様子</h2>
+          <p class="section-lead dx-on-dark">各チームの発表を1本にまとめた動画です。メンバー紹介は準備ができ次第追加します。</p>
+          <div class="dx-overview">${items.map(renderEmbed).join("")}</div>
+        </div>
+      </section>`;
+  }
+
   function renderHub(target) {
     if (!target) return;
     const hub = DATA.hub || {};
@@ -205,15 +219,40 @@
       return;
     }
     const teams = season.teams || [];
+    const seasonMedia = (season.media || []).filter((item) => item && item.url);
     const toc = teams.map((t) => `<a href="#team-${esc(t.id)}">${esc(t.code)}</a>`).join("");
-    const teamHtml = teams.length
-      ? teams.map(renderTeam).join("")
-      : `
-        <div class="dx-empty-season">
-          <p class="dx-kicker">Coming soon</p>
-          <h3>発表会の埋め込みを準備しています</h3>
-          <p>チーム名・メンバー・発表資料・動画が揃い次第、このページでご覧いただけるようにします。</p>
-        </div>`;
+    const teamSection = teams.length
+      ? `
+      <section class="section dx-teams-band" id="teams">
+        <div class="container">
+          <p class="dx-kicker">Team Showcase</p>
+          <h2 class="section-title dx-on-dark">ーDX推進タスクー　各チームの成果発表</h2>
+          <p class="section-lead dx-on-dark">発表資料と当日の動画を、チームごとにご覧いただけます。</p>
+          ${toc ? `<nav class="dx-toc">${toc}</nav>` : ""}
+          ${teams.map(renderTeam).join("")}
+        </div>
+      </section>`
+      : seasonMedia.length
+        ? `
+      <section class="section">
+        <div class="container">
+          <div class="dx-empty-season is-light">
+            <p class="dx-kicker">Members</p>
+            <h3>メンバー紹介は準備中です</h3>
+            <p>チーム構成とお名前が分かり次第、このページに追加します。</p>
+          </div>
+        </div>
+      </section>`
+        : `
+      <section class="section dx-teams-band" id="teams">
+        <div class="container">
+          <div class="dx-empty-season">
+            <p class="dx-kicker">Coming soon</p>
+            <h3>発表会の埋め込みを準備しています</h3>
+            <p>チーム名・メンバー・発表資料・動画が揃い次第、このページでご覧いただけるようにします。</p>
+          </div>
+        </div>
+      </section>`;
 
     target.innerHTML = `
       <section class="hero hero-dx-task">
@@ -225,13 +264,14 @@
           <h1>${esc(season.eventTitle)}</h1>
           <p>${esc(season.lead)}</p>
           <div class="hero-actions">
+            ${seasonMedia.length ? `<a class="btn btn-white" href="#showcase">発表動画を見る</a>` : ""}
             ${teams.length ? `<a class="btn btn-white" href="#teams">各チームの発表</a>` : ""}
             <a class="btn btn-ghost" href="${dxBase}/index.html#task">シーズン一覧へ</a>
           </div>
           <dl class="dx-meta">
             <div><dt>期間</dt><dd>${esc(season.period)}</dd></div>
             <div><dt>発表会</dt><dd>${esc(season.eventDate || "日程調整中")}</dd></div>
-            <div><dt>チーム</dt><dd>${teams.length ? `${teams.length}チーム` : "編成中"}</dd></div>
+            <div><dt>チーム</dt><dd>${teams.length ? `${teams.length}チーム` : "紹介準備中"}</dd></div>
           </dl>
         </div>
       </section>
@@ -241,15 +281,8 @@
       </div>
       ${renderStory(season.story)}
       ${renderOverview(season.overview)}
-      <section class="section dx-teams-band" id="teams">
-        <div class="container">
-          <p class="dx-kicker">Team Showcase</p>
-          <h2 class="section-title dx-on-dark">ーDX推進タスクー　各チームの成果発表</h2>
-          <p class="section-lead dx-on-dark">${teams.length ? "発表資料と当日の動画を、チームごとにご覧いただけます。" : "第2シーズンの成果は、準備ができ次第こちらに公開します。"}</p>
-          ${toc ? `<nav class="dx-toc">${toc}</nav>` : ""}
-          ${teamHtml}
-        </div>
-      </section>`;
+      ${renderSeasonMedia(seasonMedia)}
+      ${teamSection}`;
   }
 
   window.DXTask = {

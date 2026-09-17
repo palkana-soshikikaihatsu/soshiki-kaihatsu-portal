@@ -150,16 +150,19 @@ window.DX_TASK_DATA = {
       label: "2026年度 上期",
       seasonNo: 2,
       status: "ongoing",
-      statusLabel: "Season 02 / 進行中",
+      statusLabel: "Season 02 / 動画公開中",
       period: "2026年4月 — 2026年9月",
       eventDate: "",
       eventTitle: "第2回 DX推進タスク 成果発表会",
       accent: "violet",
-      lead: "2シーズン目。現場起点の開発をさらに広げています。発表会の動画・資料は準備ができ次第、このページに追加します。",
+      lead: "2シーズン目。現場起点の開発をさらに広げています。各チームの発表を1本にまとめた動画を公開しています。メンバー紹介は準備ができ次第追加します。",
       overview: {
         title: "",
         slidesUrl: ""
       },
+      media: [
+        { type: "video", title: "成果発表会（ダイジェスト）", url: "https://drive.google.com/file/d/1idZi3VZTyUNKsGtHjFnnPVzU9iCTPske/view?usp=drive_link" }
+      ],
       story: null,
       teams: []
     }

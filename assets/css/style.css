@@ -513,6 +513,12 @@ body:has(.dx-teams-band) .site-footer { margin-top: 0; }
 }
 .dx-empty-season h3 { color: #fff; margin: 8px 0 10px; }
 .dx-empty-season p { margin: 0 auto; max-width: 560px; color: #94a3b8; }
+.dx-empty-season.is-light {
+  background: #fff; border-color: var(--line);
+}
+.dx-empty-season.is-light h3 { color: var(--navy); }
+.dx-empty-season.is-light p { color: var(--muted); }
+.dx-empty-season.is-light .dx-kicker { color: var(--blue-dark); }
 
 .site-footer {
   background: #0f172a; color: #94a3b8; padding: 40px 0;
